@@ -4,13 +4,12 @@ const int MAP_HEIGHT = 30;
 #define UP 'w'
 #define DOWN 's'
 #define LEFT 'a'
-int16_t Menu();
-void Topos(int ,int);
+void Topos(const int16_t ,const int16_t );
 void Help();
 void About();
 void InitMAP();
 bool Move_Snake();
-bool Check();
 void Speed_Control();
 void Generate_Food();
 void Hide();
+int16_t Menu();
