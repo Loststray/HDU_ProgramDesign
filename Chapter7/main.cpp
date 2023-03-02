@@ -8,16 +8,26 @@ class SNAKE
 {
 public:
     int32_t speed,len;
-    char dir = 'D';
+    char dir = 'd';
     std::deque<pos> q;
     SNAKE(int s,int l) { speed = s,len = l; }
+    void init()
+    {
+        len = 3;
+        while(!q.empty())
+            q.pop_front();
+        dir = 'd';
+    }
     bool push_pos(int x,int y)
     {
-        if (G[x][y] == 1)
+        if (G[x][y] == 1 || x <= 0 || x >= MAP_WIDTH || y <= 0 || y >= MAP_HEIGHT)
             return false;
-        auto pre = q.back();
-        Topos(pre.first,pre.second);
-        std::cout << 'o';
+        if (q.size())
+        {
+            auto pre = q.back();
+            Topos(pre.first,pre.second);
+            std::cout << 'o';
+        }
         q.emplace_back(x,y);
         if (G[x][y])
         {
@@ -46,9 +56,9 @@ public:
 
 }s(250,3);
 int main() {
-    std::ios::sync_with_stdio(0);
-    srand((uint32_t) time(0));
-    while(1)
+    //std::ios::sync_with_stdio(false);
+    srand((uint32_t) time(nullptr));
+    while(true)
     {
         int16_t res = Menu();
         switch (res)
@@ -83,13 +93,13 @@ void Hide()
 int16_t Menu()
 {
     Topos(40,12);
-    std::cout << "test1";
+    std::cout << "我超贪吃蛇";
     Topos(43,14);
-    std::cout << "1.";
+    std::cout << "1.开始游戏";
     Topos(43,16);
-    std::cout << "2.";
+    std::cout << "2.帮助";
     Topos(43,18);
-    std::cout << "3.";
+    std::cout << "3.关于";
     Topos(43,20);
     std::cout << "4.";
     Hide();
@@ -134,33 +144,34 @@ void InitMAP()
     Hide();
     memset(G,0,sizeof(G));
     int32_t x = MAP_HEIGHT / 2 + 1 , y = MAP_WIDTH / 2 + 1;
+    s.init();
     s.push_pos(x,y);
-    for(int32_t i =0 ;i < MAP_WIDTH; i++)
+    for(int32_t i = 0 ;i < MAP_WIDTH; i++)
     {
         Topos(0,i);
-        std::cout << '-';
+        std::cout << '|';
         Topos(MAP_HEIGHT,i);
-        std::cout << '-';
+        std::cout << '|';
     }
-    for(int32_t i = 0;i < MAP_HEIGHT - 1;i++)
+    for(int32_t i = 1;i < MAP_HEIGHT;i++)
     {
         Topos(i,0);
-        std::cout << '|';
+        std::cout << '-';
         Topos(i,MAP_WIDTH);
-        std::cout << '|';
+        std::cout << '-';
     }
     Generate_Food();
-    Topos(5,50);
+    Topos(5,40);
     std::cout << "SCORE : ";
 }
 void Speed_Control()
 {
-
+    if (s.len <= 30)
+    s.speed = 240 - (s.len / 3) * 20;
 }
 bool Move_Snake()
 {
-    int32_t x = s.q.front().first,y = s.q.front().second;
-    auto tail = s.q.back();
+    int32_t x = s.q.back().first,y = s.q.back().second;
     Topos(x,y);
     std::cout << 'o';
     char dir = s.dir;
@@ -194,16 +205,16 @@ bool Move_Snake()
     switch (dir)
     {
         case UP:
-            x--;
+            y--;
             break;
         case DOWN:
-            x++;
-            break;
-        case RIGHT:
             y++;
             break;
+        case RIGHT:
+            x++;
+            break;
         case LEFT:
-            y--;
+            x--;
             break;
         default:
             break;
@@ -211,6 +222,17 @@ bool Move_Snake()
     if (!s.push_pos(x,y))
     {
         system("cls");
-        std::cout << "FIN";
+        Topos(45,14);
+        std::cout << "FINAL SCORE:" << s.len - 3;
+        Topos(45,16);
+        std::cout << "ded";
+        char tmp = _getch();
+        system("cls");
+        return false;
     }
+    Topos(40,5);
+    std::cout << "SCORE :" << s.len - 3;
+    Speed_Control();
+    Sleep(s.speed);
+    return true;
 }
