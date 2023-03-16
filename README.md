@@ -1,3 +1,5 @@
 # HDU_ProgramDesign
 HDU-homework
-奇奇怪怪的贪吃蛇
+Chapter 7 贪吃蛇
+
+Chapter 9 学生数据管理系统
